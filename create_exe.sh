@@ -1,4 +1,16 @@
 #!/bin/bash
-VERSION=0.4.0
-docker run --rm --volume $(pwd)/src:/src --entrypoint /bin/sh cdrx/pyinstaller-windows:python3 \
--c "pip install -r requirements.txt && pyinstaller main.py --noconsole --onefile --clean --name account_management-${VERSION}"
+
+# set path
+DIR_CMD=$(cd $(dirname $0); pwd)
+
+# define version automatically
+VERSION=$(cat ${DIR_CMD}/src/main.py | grep 'Version' | tr -cd [0-9.])
+
+# create exe file in docker container
+docker run \
+  --rm \
+  --volume ${DIR_CMD}:/src \
+  --entrypoint /bin/sh \
+  account_management \
+  -c "pyinstaller ./src/main.py --noconsole --onefile --clean --name account_management-${VERSION}"
+

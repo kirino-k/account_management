@@ -1,5 +1,5 @@
 #########################
-##### Version 0.4.0 #####
+##### Version 0.5.0 #####
 #########################
 
 import os
@@ -16,11 +16,12 @@ from tkinter import messagebox
 from openpyxl.styles import PatternFill
 
 
+# ファイル選択ダイアログに最初に表示する path を設定する
 dir_name = os.path.abspath(os.path.dirname(__file__))
 ledger_dir_name = os.path.join(dir_name, "..")
 
 
-def ledger_book_button_clicked():
+def ledger_book_selected():
     file_path = filedialog.askopenfilename(
         initialdir=ledger_dir_name, filetypes=[("Excel Files", ".xlsx")]
     )
@@ -28,12 +29,20 @@ def ledger_book_button_clicked():
         ledger_book_name.set(file_path)
 
 
-def input_book_buttun_clicked():
+def input_book_selected():
     file_path = filedialog.askopenfilename(
         initialdir=dir_name, filetypes=[("Excel Files", ".xlsx")]
     )
     if file_path:
         input_book_name.set(file_path)
+
+
+def user_list_selected():
+    file_path = filedialog.askopenfilename(
+        initialdir=dir_name, filetypes=[("Excel Files", ".xlsx")]
+    )
+    if file_path:
+        user_list_name.set(file_path)
 
 
 def run_button_clicked():
@@ -118,8 +127,17 @@ def run_button_clicked():
         ledger_values.append(ledger_value)
 
     # ledger_value
-    # 0: 処理日時, 1: REDCap研究番号, 2: 確定ユーザ名, 3: First Name, 4: Last Name, 5: メールアドレス
-    # 6: 氏名 (漢字), 6: 所属施設, 7: 所属部署, 8: トレーニング受講日, 9: プロジェクト作成・コピー作成の申請権限
+    #  0: 処理日時
+    #  1: REDCap研究番号
+    #  2: 確定ユーザ名
+    #  3: First Name
+    #  4: Last Name
+    #  5: メールアドレス
+    #  6: 氏名 (漢字)
+    #  7: 所属施設
+    #  8: 所属部署
+    #  9: トレーニング受講日
+    # 10: プロジェクト作成・コピー作成の申請権限
 
     # ユーザーアカウント情報の入力を取得
     input_values = []
@@ -134,8 +152,19 @@ def run_button_clicked():
             input_values.append(input_value)
 
     # input_value
-    # 0: 成育REDCapアカウント, 1: 希望ユーザ名 または 使用中ユーザ名, 2: 氏, 3: 名, 4: 氏, 5: 名, 6: メールアドレス
-    # 7: 所属施設①, 8: 所属施設②, 9: 所属部署, 10, トレーニング受講日, 11: 連絡担当者, 12: プロジェクト・コピー作成の申請権限の付与希望
+    #  0: 成育REDCapアカウント
+    #  1: 希望ユーザ名 または 使用中ユーザ名
+    #  2: 氏
+    #  3: 名
+    #  4: 氏
+    #  5: 名
+    #  6: メールアドレス
+    #  7: 所属施設①
+    #  8: 所属施設②
+    #  9: 所属部署
+    # 10: トレーニング受講日
+    # 11: 連絡担当者
+    # 12: プロジェクト・コピー作成の申請権限の付与希望
 
     # row-wiseな入力情報の精査
     for index, input_value in enumerate(input_values):
@@ -662,47 +691,60 @@ if __name__ == "__main__":
     root.title("REDCapアカウント管理お助けツール")
     root.geometry("600x150")
 
+    # 台帳ファイルのUI
     ledger_book_frame = ttk.Frame(root, padding=10)
     ledger_book_frame.grid()
-
     ledger_book_set = tk.StringVar()
     ledger_book_set.set("台帳ファイル: ")
     ledger_book_label = ttk.Label(ledger_book_frame, textvariable=ledger_book_set)
     ledger_book_label.grid(row=0, column=0)
-
     ledger_book_name = tk.StringVar()
     ledger_book_entry = ttk.Entry(
         ledger_book_frame, textvariable=ledger_book_name, width=50
     )
     ledger_book_entry.grid(row=0, column=1)
-
     ledger_book_button = ttk.Button(
-        ledger_book_frame, text="参照", command=ledger_book_button_clicked
+        ledger_book_frame, text="参照", command=ledger_book_selected
     )
     ledger_book_button.grid(row=0, column=2)
 
+    # 申請フォームのUI
     input_book_frame = ttk.Frame(root, padding=10)
     input_book_frame.grid()
-
     input_book_set = tk.StringVar()
     input_book_set.set("申請フォーム: ")
     input_book_label = ttk.Label(input_book_frame, textvariable=input_book_set)
     input_book_label.grid(row=0, column=0)
-
     input_book_name = tk.StringVar()
     input_book_entry = ttk.Entry(
         input_book_frame, textvariable=input_book_name, width=50
     )
     input_book_entry.grid(row=0, column=1)
-
     input_book_button = ttk.Button(
-        input_book_frame, text="参照", command=input_book_buttun_clicked
+        input_book_frame, text="参照", command=input_book_selected
     )
     input_book_button.grid(row=0, column=2)
 
+    # ユーザーリストのUI
+    user_list_frame = ttk.Frame(root, padding=10)
+    user_list_frame.grid()
+    user_list_set = tk.StringVar()
+    user_list_set.set("ユーザーリスト: ")
+    user_list_label = ttk.Label(user_list_frame, textvariable=user_list_set)
+    user_list_label.grid(row=0, column=0)
+    user_list_name = tk.StringVar()
+    user_list_entry = ttk.Entry(
+        user_list_frame, textvariable=user_list_name, width=50
+    )
+    user_list_entry.grid(row=0, column=1)
+    user_list_button = ttk.Button(
+        user_list_frame, text="参照", command=user_list_selected
+    )
+    user_list_button.grid(row=0, column=2)
+
+    # 実行ボタンのUI
     run_frame = ttk.Frame(root, padding=10)
     run_frame.grid()
-
     run_button = ttk.Button(run_frame, text="実行", command=run_button_clicked)
     run_button.grid(row=0, column=0)
 
